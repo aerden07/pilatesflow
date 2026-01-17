@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PilatesFlow - Admin Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            position: fixed;
+            width: 260px;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            padding: 0 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .nav-icon {
+            font-size: 1.3rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title h1 {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .header-title p {
+            color: #999;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            background: #f5f7fa;
+            border-radius: 50px;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-info h3 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            opacity: 0.2;
+        }
+
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .trend-up {
+            color: #28a745;
+        }
+
+        .trend-down {
+            color: #dc3545;
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .card-action {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f8f9fa;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem;
+            font-weight: 600;
+            color: #666;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-badge {
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-expired {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .action-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .action-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Calendar Widget */
+        .calendar-widget {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .calendar-nav button {
+            background: #f0f0f0;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .appointments-list {
+            list-style: none;
+        }
+
+        .appointment-item {
+            padding: 1rem;
+            border-left: 4px solid #667eea;
+            background: #f8f9fa;
+            margin-bottom: 0.75rem;
+            border-radius: 6px;
+        }
+
+        .appointment-time {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 0.25rem;
+        }
+
+        .appointment-client {
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .appointment-type {
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #667eea;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">🧘‍♀️ PilatesFlow</div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <span class="nav-icon">📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="member-management.html" class="nav-link">
+                        <span class="nav-icon">👥</span>
+                        <span>Üyeler</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <span class="nav-icon">📅</span>
+                        <span>Randevular</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <span class="nav-icon">📦</span>
+                        <span>Paketler</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <span class="nav-icon">💳</span>
+                        <span>Ödemeler</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <span class="nav-icon">👨‍🏫</span>
+                        <span>Eğitmenler</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <span class="nav-icon">📈</span>
+                        <span>Raporlar</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <span class="nav-icon">⚙️</span>
+                        <span>Ayarlar</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-title">
+                    <h1>Hoş Geldiniz, Ahmet Bey 👋</h1>
+                    <p>Bugün 17 Ocak 2026, Cumartesi</p>
+                </div>
+                <div class="header-actions">
+                    <a href="#" class="btn btn-primary">+ Yeni Üye Ekle</a>
+                    <div class="user-profile">
+                        <div class="user-avatar">AB</div>
+                        <span>Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>248</h3>
+                        <p>Toplam Üye</p>
+                        <div class="stat-trend trend-up">
+                            ↑ 12% bu ay
+                        </div>
+                    </div>
+                    <div class="stat-icon">👥</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>42</h3>
+                        <p>Bugünkü Dersler</p>
+                        <div class="stat-trend trend-up">
+                            ↑ 8% geçen haftaya göre
+                        </div>
+                    </div>
+                    <div class="stat-icon">📅</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>₺142,500</h3>
+                        <p>Aylık Gelir</p>
+                        <div class="stat-trend trend-up">
+                            ↑ 23% bu ay
+                        </div>
+                    </div>
+                    <div class="stat-icon">💰</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>%94</h3>
+                        <p>Doluluk Oranı</p>
+                        <div class="stat-trend trend-up">
+                            ↑ 5% geçen aya göre
+                        </div>
+                    </div>
+                    <div class="stat-icon">📊</div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card" style="margin-bottom: 2rem;">
+                <div class="card-header">
+                    <h2 class="card-title">Hızlı İşlemler</h2>
+                </div>
+                <div class="quick-actions">
+                    <div class="action-card">
+                        <div class="action-icon">➕</div>
+                        <div>Yeni Üye</div>
+                    </div>
+                    <div class="action-card">
+                        <div class="action-icon">📅</div>
+                        <div>Randevu Oluştur</div>
+                    </div>
+                    <div class="action-card">
+                        <div class="action-icon">💳</div>
+                        <div>Ödeme Al</div>
+                    </div>
+                    <div class="action-card">
+                        <div class="action-icon">📊</div>
+                        <div>Rapor Görüntüle</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Grid -->
+            <div class="content-grid">
+                <!-- Recent Members -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Son Üyeler</h2>
+                        <a href="member-management.html" class="card-action">Tümünü Gör →</a>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Üye Adı</th>
+                                    <th>Paket</th>
+                                    <th>Kalan Ders</th>
+                                    <th>Durum</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Ayşe Yılmaz</strong></td>
+                                    <td>12 Ders Paketi</td>
+                                    <td>8 ders</td>
+                                    <td><span class="status-badge status-active">Aktif</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Mehmet Demir</strong></td>
+                                    <td>Aylık Sınırsız</td>
+                                    <td>Sınırsız</td>
+                                    <td><span class="status-badge status-active">Aktif</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Zeynep Kaya</strong></td>
+                                    <td>8 Ders Paketi</td>
+                                    <td>2 ders</td>
+                                    <td><span class="status-badge status-pending">Yenileme Gerekli</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Can Özkan</strong></td>
+                                    <td>12 Ders Paketi</td>
+                                    <td>10 ders</td>
+                                    <td><span class="status-badge status-active">Aktif</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Elif Şahin</strong></td>
+                                    <td>Özel Ders</td>
+                                    <td>5 ders</td>
+                                    <td><span class="status-badge status-active">Aktif</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Today's Schedule -->
+                <div class="calendar-widget">
+                    <div class="card-header">
+                        <h2 class="card-title">Bugünkü Dersler</h2>
+                    </div>
+                    <ul class="appointments-list">
+                        <li class="appointment-item">
+                            <div class="appointment-time">09:00 - 10:00</div>
+                            <div class="appointment-client">Reformer Pilates - Grup</div>
+                            <div class="appointment-type">8 kişi • Zeynep Hoca</div>
+                        </li>
+                        <li class="appointment-item">
+                            <div class="appointment-time">10:30 - 11:30</div>
+                            <div class="appointment-client">Mat Pilates - Grup</div>
+                            <div class="appointment-type">12 kişi • Ayşe Hoca</div>
+                        </li>
+                        <li class="appointment-item">
+                            <div class="appointment-time">14:00 - 15:00</div>
+                            <div class="appointment-client">Özel Ders</div>
+                            <div class="appointment-type">Ayşe Yılmaz • Zeynep Hoca</div>
+                        </li>
+                        <li class="appointment-item">
+                            <div class="appointment-time">16:00 - 17:00</div>
+                            <div class="appointment-client">Reformer Pilates - Grup</div>
+                            <div class="appointment-type">10 kişi • Mehmet Hoca</div>
+                        </li>
+                        <li class="appointment-item">
+                            <div class="appointment-time">18:00 - 19:00</div>
+                            <div class="appointment-client">Mat Pilates - Grup</div>
+                            <div class="appointment-type">15 kişi • Ayşe Hoca</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Revenue Chart -->
+            <div class="chart-container">
+                <div class="card-header">
+                    <h2 class="card-title">Aylık Gelir Analizi</h2>
+                    <div class="calendar-nav">
+                        <button>Son 7 Gün</button>
+                        <button style="background: #667eea; color: white;">Bu Ay</button>
+                        <button>Bu Yıl</button>
+                    </div>
+                </div>
+                <div class="chart-placeholder">
+                    📈 Gelir Grafiği - Chart.js ile entegre edilecek
+                </div>
+            </div>
+
+            <!-- Recent Payments -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Son Ödemeler</h2>
+                    <a href="#" class="card-action">Tümünü Gör →</a>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tarih</th>
+                                <th>Üye</th>
+                                <th>Paket</th>
+                                <th>Tutar</th>
+                                <th>Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>17.01.2026</td>
+                                <td>Ayşe Yılmaz</td>
+                                <td>12 Ders Paketi</td>
+                                <td>₺2,400</td>
+                                <td><span class="status-badge status-active">Ödendi</span></td>
+                            </tr>
+                            <tr>
+                                <td>17.01.2026</td>
+                                <td>Mehmet Demir</td>
+                                <td>Aylık Sınırsız</td>
+                                <td>₺1,800</td>
+                                <td><span class="status-badge status-active">Ödendi</span></td>
+                            </tr>
+                            <tr>
+                                <td>16.01.2026</td>
+                                <td>Zeynep Kaya</td>
+                                <td>8 Ders Paketi</td>
+                                <td>₺1,600</td>
+                                <td><span class="status-badge status-active">Ödendi</span></td>
+                            </tr>
+                            <tr>
+                                <td>16.01.2026</td>
+                                <td>Can Özkan</td>
+                                <td>Özel Ders x3</td>
+                                <td>₺1,500</td>
+                                <td><span class="status-badge status-pending">Beklemede</span></td>
+                            </tr>
+                            <tr>
+                                <td>15.01.2026</td>
+                                <td>Elif Şahin</td>
+                                <td>12 Ders Paketi</td>
+                                <td>₺2,400</td>
+                                <td><span class="status-badge status-active">Ödendi</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Simulate real-time updates
+        setInterval(() => {
+            const now = new Date();
+            document.querySelector('.header-title p').textContent = 
+                `Bugün ${now.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric', weekday: 'long' })}`;
+        }, 1000);
+    </script>
+</body>
+</html>

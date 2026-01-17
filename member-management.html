@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Üye Yönetimi - PilatesFlow</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar - Same as dashboard */
+        .sidebar {
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            position: fixed;
+            width: 260px;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            padding: 0 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .nav-icon {
+            font-size: 1.3rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 2rem;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .breadcrumb {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        /* Toolbar */
+        .toolbar {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .search-box {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 3rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .toolbar-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .filter-btn {
+            background: #f0f0f0;
+            color: #333;
+            padding: 0.75rem 1.25rem;
+        }
+
+        .filter-btn:hover {
+            background: #e0e0e0;
+        }
+
+        /* Stats Summary */
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-box h3 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #667eea;
+        }
+
+        .stat-box p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Members Table */
+        .members-table {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f8f9fa;
+        }
+
+        th {
+            text-align: left;
+            padding: 1.25rem 1rem;
+            font-weight: 600;
+            color: #666;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 1.25rem 1rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        tbody tr {
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .member-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .member-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .member-details h4 {
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+            color: #333;
+        }
+
+        .member-details p {
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        .status-badge {
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .status-aktif {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pasif {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-dondurulmus {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .progress-bar {
+            width: 100px;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .icon-btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            background: #f0f0f0;
+        }
+
+        .icon-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 0 0 15px 15px;
+        }
+
+        .pagination-info {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .page-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e0e0e0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .page-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .page-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: 100%;
+            }
+
+            .table-container {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">🧘‍♀️ PilatesFlow</div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="admin-dashboard.html" class="nav-link">
+                        <span class="nav-icon">📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="member-management.html" class="nav-link active">
+                        <span class="nav-icon">👥</span>
+                        <span>Üyeler</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <span class="nav-icon">📅</span>
+                        <span>Randevular</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <span class="nav-icon">📦</span>
+                        <span>Paketler</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <span class="nav-icon">💳</span>
+                        <span>Ödemeler</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <span class="nav-icon">👨‍🏫</span>
+                        <span>Eğitmenler</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <span class="nav-icon">📈</span>
+                        <span>Raporlar</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <span class="nav-icon">⚙️</span>
+                        <span>Ayarlar</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1>Üye Yönetimi</h1>
+                <div class="breadcrumb">
+                    <a href="admin-dashboard.html">Dashboard</a> / Üyeler
+                </div>
+            </div>
+
+            <!-- Stats Summary -->
+            <div class="stats-summary">
+                <div class="stat-box">
+                    <h3>248</h3>
+                    <p>Toplam Üye</p>
+                </div>
+                <div class="stat-box">
+                    <h3>186</h3>
+                    <p>Aktif Üye</p>
+                </div>
+                <div class="stat-box">
+                    <h3>42</h3>
+                    <p>Yeni Üye (Bu Ay)</p>
+                </div>
+                <div class="stat-box">
+                    <h3>20</h3>
+                    <p>Yenileme Bekleyen</p>
+                </div>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="toolbar">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInput" placeholder="Üye ara... (Ad, telefon, email)">
+                </div>
+                <div class="toolbar-actions">
+                    <button class="btn filter-btn" onclick="toggleFilters()">🔽 Filtrele</button>
+                    <button class="btn btn-secondary">📊 Dışa Aktar</button>
+                    <button class="btn btn-primary" onclick="openAddModal()">➕ Yeni Üye Ekle</button>
+                </div>
+            </div>
+
+            <!-- Members Table -->
+            <div class="members-table">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ÜYE</th>
+                                <th>İLETİŞİM</th>
+                                <th>PAKET</th>
+                                <th>KALAN DERS</th>
+                                <th>BİTİŞ TARİHİ</th>
+                                <th>DURUM</th>
+                                <th>İŞLEMLER</th>
+                            </tr>
+                        </thead>
+                        <tbody id="membersTableBody">
+                            <!-- Data will be loaded here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination">
+                    <div class="pagination-info">
+                        Toplam <strong>248</strong> üyeden <strong>1-10</strong> arası gösteriliyor
+                    </div>
+                    <div class="pagination-controls">
+                        <button class="page-btn">◀ Önceki</button>
+                        <button class="page-btn active">1</button>
+                        <button class="page-btn">2</button>
+                        <button class="page-btn">3</button>
+                        <button class="page-btn">...</button>
+                        <button class="page-btn">25</button>
+                        <button class="page-btn">Sonraki ▶</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Member Modal -->
+    <div id="memberModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Yeni Üye Ekle</h2>
+                <button class="close-btn" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="memberForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Ad *</label>
+                            <input type="text" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Soyad *</label>
+                            <input type="text" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Telefon *</label>
+                            <input type="tel" required>
+                        </div>
+                        <div class="form-group">
+                            <label>E-posta</label>
+                            <input type="email">
+                        </div>
+                        <div class="form-group">
+                            <label>Doğum Tarihi</label>
+                            <input type="date">
+                        </div>
+                        <div class="form-group">
+                            <label>Paket Türü *</label>
+                            <select required>
+                                <option value="">Seçiniz</option>
+                                <option value="8-ders">8 Ders Paketi</option>
+                                <option value="12-ders">12 Ders Paketi</option>
+                                <option value="aylik">Aylık Sınırsız</option>
+                                <option value="ozel">Özel Ders</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Başlangıç Tarihi *</label>
+                            <input type="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Bitiş Tarihi *</label>
+                            <input type="date" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Notlar</label>
+                        <textarea rows="3" placeholder="Özel notlar..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">İptal</button>
+                <button class="btn btn-primary">💾 Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample member data
+        const members = [
+            { id: 1, name: "Ayşe", surname: "Yılmaz", phone: "0532 123 4567", email: "ayse.yilmaz@email.com", package: "12 Ders", remaining: 8, total: 12, endDate: "2026-03-01", status: "Aktif" },
+            { id: 2, name: "Mehmet", surname: "Demir", phone: "0533 234 5678", email: "mehmet.demir@email.com", package: "Aylık Sınırsız", remaining: 999, total: 999, endDate: "2026-02-01", status: "Aktif" },
+            { id: 3, name: "Zeynep", surname: "Kaya", phone: "0534 345 6789", email: "zeynep.kaya@email.com", package: "8 Ders", remaining: 2, total: 8, endDate: "2026-02-15", status: "Aktif" },
+            { id: 4, name: "Can", surname: "Özkan", phone: "0535 456 7890", email: "can.ozkan@email.com", package: "12 Ders", remaining: 10, total: 12, endDate: "2026-03-10", status: "Aktif" },
+            { id: 5, name: "Elif", surname: "Şahin", phone: "0536 567 8901", email: "elif.sahin@email.com", package: "Özel Ders", remaining: 5, total: 8, endDate: "2026-02-20", status: "Aktif" },
+            { id: 6, name: "Ahmet", surname: "Çelik", phone: "0537 678 9012", email: "ahmet.celik@email.com", package: "8 Ders", remaining: 0, total: 8, endDate: "2026-01-10", status: "Pasif" },
+            { id: 7, name: "Selin", surname: "Aydın", phone: "0538 789 0123", email: "selin.aydin@email.com", package: "12 Ders", remaining: 7, total: 12, endDate: "2026-02-20", status: "Aktif" },
+            { id: 8, name: "Burak", surname: "Arslan", phone: "0539 890 1234", email: "burak.arslan@email.com", package: "Özel Ders", remaining: 4, total: 8, endDate: "2026-02-02", status: "Aktif" },
+            { id: 9, name: "Deniz", surname: "Korkmaz", phone: "0530 901 2345", email: "deniz.korkmaz@email.com", package: "Aylık Sınırsız", remaining: 999, total: 999, endDate: "2026-02-15", status: "Aktif" },
+            { id: 10, name: "Merve", surname: "Yıldız", phone: "0531 012 3456", email: "merve.yildiz@email.com", package: "12 Ders", remaining: 9, total: 12, endDate: "2026-03-05", status: "Aktif" }
+        ];
+
+        function renderMembers(membersToRender = members) {
+            const tbody = document.getElementById('membersTableBody');
+            tbody.innerHTML = membersToRender.map(member => {
+                const percentage = (member.remaining / member.total) * 100;
+                const statusClass = member.status === 'Aktif' ? 'status-aktif' : 
+                                   member.status === 'Pasif' ? 'status-pasif' : 'status-dondurulmus';
+                
+                return `
+                    <tr>
+                        <td>
+                            <div class="member-info">
+                                <div class="member-avatar">${member.name[0]}${member.surname[0]}</div>
+                                <div class="member-details">
+                                    <h4>${member.name} ${member.surname}</h4>
+                                    <p>ID: ${member.id.toString().padStart(4, '0')}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>${member.phone}</div>
+                            <div style="color: #999; font-size: 0.85rem;">${member.email}</div>
+                        </td>
+                        <td><strong>${member.package}</strong></td>
+                        <td>
+                            <div style="margin-bottom: 0.5rem;">${member.remaining} / ${member.total}</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${percentage}%"></div>
+                            </div>
+                        </td>
+                        <td>${new Date(member.endDate).toLocaleDateString('tr-TR')}</td>
+                        <td><span class="status-badge ${statusClass}">${member.status}</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="icon-btn" title="Görüntüle">👁️</button>
+                                <button class="icon-btn" title="Düzenle">✏️</button>
+                                <button class="icon-btn" title="Link Paylaş">🔗</button>
+                                <button class="icon-btn" title="Sil">🗑️</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filtered = members.filter(m => 
+                `${m.name} ${m.surname}`.toLowerCase().includes(searchTerm) ||
+                m.phone.includes(searchTerm) ||
+                m.email.toLowerCase().includes(searchTerm)
+            );
+            renderMembers(filtered);
+        });
+
+        function openAddModal() {
+            document.getElementById('memberModal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('memberModal').classList.remove('show');
+        }
+
+        function toggleFilters() {
+            alert('Filtre paneli yakında eklenecek!');
+        }
+
+        // Initialize
+        renderMembers();
+    </script>
+</body>
+</html>

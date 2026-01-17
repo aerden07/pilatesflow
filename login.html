@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş - PilatesFlow</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 450px;
+            width: 100%;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .footer-links {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .footer-links a {
+            color: #667eea;
+            text-decoration: none;
+            margin: 0 1rem;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        .demo-credentials {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .demo-credentials h4 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .demo-credentials p {
+            margin: 0.25rem 0;
+            color: #666;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 2rem 1.5rem;
+            }
+
+            .logo h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <h1>🧘‍♀️ PilatesFlow</h1>
+            <p>Yönetim Paneli</p>
+        </div>
+
+        <div id="alertBox" class="alert"></div>
+
+        <!-- Demo Credentials Info -->
+        <div class="demo-credentials">
+            <h4>📝 Demo Giriş Bilgileri</h4>
+            <p><strong>Email:</strong> admin@pilatesflow.com</p>
+            <p><strong>Şifre:</strong> demo123456</p>
+            <p style="margin-top: 0.5rem; font-size: 0.85rem; color: #999;">
+                (Supabase kurulumundan sonra kendi hesabınızı oluşturacaksınız)
+            </p>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">E-posta</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    placeholder="ornek@email.com"
+                    value="admin@pilatesflow.com"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">Şifre</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    placeholder="••••••••"
+                    value="demo123456"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="btn" id="loginBtn">
+                Giriş Yap
+            </button>
+        </form>
+
+        <div class="footer-links">
+            <a href="index.html">← Ana Sayfaya Dön</a>
+            <a href="#">Şifremi Unuttum</a>
+        </div>
+    </div>
+
+    <script>
+        // ⚠️ ÖNEMLİ: Bu değerleri Supabase kurulumundan sonra değiştirin!
+        const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL';  // Örnek: https://xxxxx.supabase.co
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'; // Uzun bir key
+        
+        // Supabase client oluştur
+        let supabase;
+        try {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } catch (error) {
+            console.error('Supabase bağlantı hatası:', error);
+        }
+
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const alertBox = document.getElementById('alertBox');
+
+        // Sayfa yüklendiğinde oturum kontrolü
+        window.addEventListener('DOMContentLoaded', async () => {
+            // Supabase kurulmamışsa demo mode
+            if (!supabase || SUPABASE_URL === 'YOUR_SUPABASE_PROJECT_URL') {
+                showAlert('Demo modunda çalışıyorsunuz. Tam özellikler için SETUP-GUIDE.md dosyasını takip edin.', 'info');
+                return;
+            }
+
+            // Aktif oturum var mı kontrol et
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                window.location.href = 'admin-dashboard.html';
+            }
+        });
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Demo mode check
+            if (!supabase || SUPABASE_URL === 'YOUR_SUPABASE_PROJECT_URL') {
+                // Demo credentials
+                if (email === 'admin@pilatesflow.com' && password === 'demo123456') {
+                    showAlert('Demo girişi başarılı! Dashboard\'a yönlendiriliyorsunuz...', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'admin-dashboard.html';
+                    }, 1500);
+                } else {
+                    showAlert('Demo için: admin@pilatesflow.com / demo123456 kullanın', 'error');
+                }
+                return;
+            }
+
+            // Gerçek Supabase auth
+            try {
+                loginBtn.disabled = true;
+                loginBtn.textContent = 'Giriş yapılıyor...';
+
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (error) throw error;
+
+                showAlert('Giriş başarılı! Yönlendiriliyorsunuz...', 'success');
+                
+                setTimeout(() => {
+                    window.location.href = 'admin-dashboard.html';
+                }, 1000);
+
+            } catch (error) {
+                console.error('Login error:', error);
+                showAlert('Giriş hatası: ' + error.message, 'error');
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Giriş Yap';
+            }
+        });
+
+        function showAlert(message, type) {
+            alertBox.textContent = message;
+            alertBox.className = 'alert alert-' + type;
+            alertBox.style.display = 'block';
+        }
+
+        // Password visibility toggle (gelişmiş özellik)
+        document.getElementById('password').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                loginForm.dispatchEvent(new Event('submit'));
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PilatesFlow - Profesyonel Pilates Stüdyo Yönetim Sistemi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* Navigation */
+        nav {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 6rem 2rem;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .trust-badges {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.2);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 4rem 2rem;
+            background: #f8f9fa;
+        }
+
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .feature-description {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            padding: 6rem 2rem;
+            background: #f8f9fa;
+        }
+
+        .pricing-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .pricing-card {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .pricing-card.featured {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px) scale(1.02);
+        }
+
+        .pricing-card.featured:hover {
+            transform: translateY(-10px) scale(1.07);
+        }
+
+        .plan-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .plan-price {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .plan-period {
+            opacity: 0.7;
+            margin-bottom: 2rem;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .plan-features li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .pricing-card.featured .plan-features li {
+            border-bottom-color: rgba(255,255,255,0.2);
+        }
+
+        .plan-features li:before {
+            content: "✓ ";
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        .pricing-card.featured .plan-features li:before {
+            color: #fff;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .testimonial-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .testimonial-text {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .author-info h4 {
+            margin-bottom: 0.25rem;
+        }
+
+        .author-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* CTA Section */
+        .cta {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 6rem 2rem;
+            text-align: center;
+        }
+
+        .cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        /* Footer */
+        footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 3rem 2rem 1rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: #667eea;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #333;
+            color: #999;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">🧘‍♀️ PilatesFlow</div>
+            <div class="nav-links">
+                <a href="#ozellikler">Özellikler</a>
+                <a href="#fiyatlandirma">Fiyatlandırma</a>
+                <a href="#referanslar">Referanslar</a>
+                <a href="admin-dashboard.html" class="btn btn-secondary">Demo Giriş</a>
+                <a href="#" class="btn btn-primary">Ücretsiz Dene</a>
+            </div>
+            <button class="mobile-menu-btn">☰</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Pilates Stüdyonuzu Profesyonelce Yönetin</h1>
+            <p>Üye yönetiminden randevu takibine, ödeme alımından raporlamaya kadar tüm işlemlerinizi tek platformda gerçekleştirin.</p>
+            <div class="hero-buttons">
+                <a href="admin-dashboard.html" class="btn btn-primary" style="background: white; color: #667eea; font-size: 1.1rem; padding: 1rem 2rem;">
+                    🚀 Demo'yu Deneyin
+                </a>
+                <a href="#fiyatlandirma" class="btn btn-secondary" style="font-size: 1.1rem; padding: 1rem 2rem;">
+                    Fiyatları Görün
+                </a>
+            </div>
+            <div class="trust-badges">
+                <div class="badge">⭐ 4.9/5 Müşteri Memnuniyeti</div>
+                <div class="badge">🔒 ISO 27001 Sertifikalı</div>
+                <div class="badge">📱 Mobil Uyumlu</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number">500+</div>
+                <div class="stat-label">Aktif Stüdyo</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">50K+</div>
+                <div class="stat-label">Mutlu Üye</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">1M+</div>
+                <div class="stat-label">Tamamlanan Ders</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">%98</div>
+                <div class="stat-label">Tavsiye Oranı</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="ozellikler">
+        <div class="section-header">
+            <h2 class="section-title">Tüm İhtiyaçlarınız İçin Tek Platform</h2>
+            <p class="section-subtitle">Stüdyonuzu büyütmek için ihtiyacınız olan her şey</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📅</div>
+                <h3 class="feature-title">Akıllı Randevu Yönetimi</h3>
+                <p class="feature-description">Grup ve özel ders planlaması, otomatik hatırlatmalar, bekleme listesi yönetimi.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">👥</div>
+                <h3 class="feature-title">Üye Portalı</h3>
+                <p class="feature-description">Üyeleriniz kendi hesaplarından ders rezervasyonu yapabilir, paket satın alabilir.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💳</div>
+                <h3 class="feature-title">Online Ödeme</h3>
+                <p class="feature-description">Kredi kartı ile güvenli ödeme, otomatik fatura kesimi, taksit seçenekleri.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3 class="feature-title">Detaylı Raporlar</h3>
+                <p class="feature-description">Gelir-gider analizleri, üye istatistikleri, eğitmen performans raporları.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📏</div>
+                <h3 class="feature-title">Vücut Ölçüm Takibi</h3>
+                <p class="feature-description">Üyelerinizin ilerlemesini takip edin, motivasyonlarını artırın.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3 class="feature-title">Mobil Erişim</h3>
+                <p class="feature-description">Telefonunuzdan tüm işlemlerinizi yönetin, her yerden erişin.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <h3 class="feature-title">SMS & Email</h3>
+                <p class="feature-description">Otomatik hatırlatmalar, kampanya bildirimleri, toplu mesajlaşma.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">👨‍🏫</div>
+                <h3 class="feature-title">Eğitmen Yönetimi</h3>
+                <p class="feature-description">Çoklu eğitmen desteği, izin takibi, maaş hesaplamaları.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔐</div>
+                <h3 class="feature-title">Güvenli Veri</h3>
+                <p class="feature-description">ISO 27001 sertifikalı, günlük yedekleme, şifreli veri saklama.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing" id="fiyatlandirma">
+        <div class="pricing-container">
+            <div class="section-header">
+                <h2 class="section-title">Size Uygun Planı Seçin</h2>
+                <p class="section-subtitle">Tüm planlarda 14 gün ücretsiz deneme</p>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3 class="plan-name">Başlangıç</h3>
+                    <div class="plan-price">₺999</div>
+                    <div class="plan-period">/aylık</div>
+                    <ul class="plan-features">
+                        <li>50 aktif üye</li>
+                        <li>1 eğitmen hesabı</li>
+                        <li>Temel raporlar</li>
+                        <li>Email desteği</li>
+                        <li>Mobil uygulama</li>
+                        <li>SMS paketi (100 adet)</li>
+                    </ul>
+                    <a href="#" class="btn btn-secondary" style="width: 100%;">Başla</a>
+                </div>
+
+                <div class="pricing-card featured">
+                    <h3 class="plan-name">Profesyonel</h3>
+                    <div class="plan-price">₺1,999</div>
+                    <div class="plan-period">/aylık</div>
+                    <ul class="plan-features">
+                        <li>200 aktif üye</li>
+                        <li>5 eğitmen hesabı</li>
+                        <li>Gelişmiş raporlar</li>
+                        <li>Öncelikli destek</li>
+                        <li>Online ödeme entegrasyonu</li>
+                        <li>SMS paketi (500 adet)</li>
+                        <li>Özel eğitim</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary" style="width: 100%; background: white; color: #667eea;">En Popüler</a>
+                </div>
+
+                <div class="pricing-card">
+                    <h3 class="plan-name">Kurumsal</h3>
+                    <div class="plan-price">₺3,999</div>
+                    <div class="plan-period">/aylık</div>
+                    <ul class="plan-features">
+                        <li>Sınırsız üye</li>
+                        <li>Sınırsız eğitmen</li>
+                        <li>Tüm raporlar</li>
+                        <li>7/24 destek</li>
+                        <li>Çoklu şube yönetimi</li>
+                        <li>Sınırsız SMS</li>
+                        <li>API erişimi</li>
+                        <li>Özel geliştirme</li>
+                    </ul>
+                    <a href="#" class="btn btn-secondary" style="width: 100%;">İletişime Geç</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials" id="referanslar">
+        <div class="section-header">
+            <h2 class="section-title">Müşterilerimiz Ne Diyor?</h2>
+            <p class="section-subtitle">500+ stüdyo bize güveniyor</p>
+        </div>
+        <div class="testimonial-grid">
+            <div class="testimonial-card">
+                <p class="testimonial-text">"PilatesFlow sayesinde yönetim işlerimiz %80 azaldı. Artık üyelerimize daha fazla zaman ayırabiliyoruz. Özellikle otomatik hatırlatma sistemi devamsızlığı ciddi oranda azalttı."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">AY</div>
+                    <div class="author-info">
+                        <h4>Ayşe Yılmaz</h4>
+                        <p>Harmony Pilates - İstanbul</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-text">"3 şubemiz var ve hepsini tek platformdan yönetebiliyoruz. Finansal raporlar gerçek zamanlı, eğitmen performanslarını takip ediyoruz. Sistemin mobil uygulaması harika!"</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">MK</div>
+                    <div class="author-info">
+                        <h4>Mehmet Kaya</h4>
+                        <p>Core Pilates - Ankara</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-text">"Üyelerimiz online rezervasyon yapabildiği için çok memnun. Ödeme entegrasyonu sorunsuz çalışıyor. Destek ekibi her zaman yardımcı oluyor. Kesinlikle tavsiye ediyorum!"</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">ZÇ</div>
+                    <div class="author-info">
+                        <h4>Zeynep Çelik</h4>
+                        <p>Zen Pilates - İzmir</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <h2>Stüdyonuzu Bir Üst Seviyeye Taşıyın</h2>
+        <p>14 gün boyunca tüm özellikleri ücretsiz deneyin. Kredi kartı gerekmez.</p>
+        <div class="hero-buttons">
+            <a href="admin-dashboard.html" class="btn btn-primary" style="background: white; color: #667eea; font-size: 1.1rem; padding: 1rem 2.5rem;">
+                🚀 Ücretsiz Deneyin
+            </a>
+            <a href="#" class="btn btn-secondary" style="font-size: 1.1rem; padding: 1rem 2.5rem;">
+                📞 Demo Talep Edin
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>PilatesFlow</h3>
+                <p>Pilates stüdyoları için profesyonel yönetim sistemi.</p>
+                <p style="margin-top: 1rem;">© 2026 PilatesFlow. Tüm hakları saklıdır.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Ürün</h3>
+                <ul>
+                    <li><a href="#ozellikler">Özellikler</a></li>
+                    <li><a href="#fiyatlandirma">Fiyatlandırma</a></li>
+                    <li><a href="#">Entegrasyonlar</a></li>
+                    <li><a href="admin-dashboard.html">Demo</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Şirket</h3>
+                <ul>
+                    <li><a href="#">Hakkımızda</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Kariyer</a></li>
+                    <li><a href="#">İletişim</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Destek</h3>
+                <ul>
+                    <li><a href="#">Yardım Merkezi</a></li>
+                    <li><a href="#">Eğitim Videoları</a></li>
+                    <li><a href="#">SSS</a></li>
+                    <li><a href="#">Gizlilik</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>🔒 ISO 27001 Sertifikalı | 🇹🇷 Türkiye'de Geliştirildi</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
