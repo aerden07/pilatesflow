@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giriş - PilatesFlow</title>
+    <title>Giriş - PilatesFlow Yönetim Paneli</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧘‍♀️</text></svg>">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
@@ -13,7 +14,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
@@ -22,50 +23,121 @@
             padding: 20px;
         }
 
-        .login-container {
-            background: white;
-            padding: 3rem;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 450px;
+        .login-wrapper {
             width: 100%;
+            max-width: 420px;
         }
 
-        .logo {
-            text-align: center;
-            margin-bottom: 2rem;
+        .login-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
         }
 
-        .logo h1 {
-            font-size: 2.5rem;
+        .login-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
+            color: white;
+            padding: 2.5rem 2rem;
+            text-align: center;
         }
 
-        .logo p {
-            color: #666;
-            font-size: 1.1rem;
+        .login-header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .login-header p {
+            opacity: 0.95;
+            font-size: 1.05rem;
+        }
+
+        .login-body {
+            padding: 2.5rem 2rem;
         }
 
         .alert {
             padding: 1rem;
-            border-radius: 8px;
+            border-radius: 10px;
             margin-bottom: 1.5rem;
             display: none;
+            font-size: 0.95rem;
+        }
+
+        .alert.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+            background: #fee;
+            color: #c33;
+            border: 2px solid #fcc;
         }
 
         .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+            background: #efe;
+            color: #3a3;
+            border: 2px solid #cfc;
+        }
+
+        .alert-info {
+            background: #def;
+            color: #369;
+            border: 2px solid #bdf;
+        }
+
+        .demo-box {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1.25rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border-left: 4px solid #667eea;
+        }
+
+        .demo-box h4 {
+            color: #667eea;
+            margin-bottom: 0.75rem;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .demo-credentials {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin-top: 0.75rem;
+        }
+
+        .demo-credentials div {
+            padding: 0.4rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .demo-credentials div:last-child {
+            border-bottom: none;
+        }
+
+        .demo-credentials strong {
+            color: #667eea;
+            display: inline-block;
+            width: 80px;
         }
 
         .form-group {
@@ -74,206 +146,314 @@
 
         .form-group label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.6rem;
             font-weight: 600;
             color: #333;
+            font-size: 0.95rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 1.2rem;
         }
 
         .form-group input {
             width: 100%;
-            padding: 1rem;
+            padding: 1rem 1rem 1rem 3rem;
             border: 2px solid #e0e0e0;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 1rem;
-            transition: border-color 0.3s;
+            transition: all 0.3s;
+            font-family: inherit;
         }
 
         .form-group input:focus {
             outline: none;
             border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
-        .btn {
-            width: 100%;
-            padding: 1rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
+        .form-group input::placeholder {
+            color: #aaa;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        .forgot-password {
+            text-align: right;
+            margin-bottom: 1.5rem;
         }
 
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .footer-links {
-            text-align: center;
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid #e0e0e0;
-        }
-
-        .footer-links a {
+        .forgot-password a {
             color: #667eea;
             text-decoration: none;
-            margin: 0 1rem;
+            font-size: 0.9rem;
+            transition: color 0.3s;
         }
 
-        .footer-links a:hover {
+        .forgot-password a:hover {
+            color: #5568d3;
             text-decoration: underline;
         }
 
-        .demo-credentials {
+        .btn-login {
+            width: 100%;
+            padding: 1.1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-login:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-login:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .login-footer {
+            padding: 1.5rem 2rem 2rem;
             background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .login-footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .login-footer a:hover {
+            color: #5568d3;
+            text-decoration: underline;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 1rem;
+            position: relative;
+            color: #999;
             font-size: 0.9rem;
         }
 
-        .demo-credentials h4 {
-            color: #667eea;
-            margin-bottom: 0.5rem;
-        }
-
-        .demo-credentials p {
-            margin: 0.25rem 0;
-            color: #666;
-        }
-
         @media (max-width: 480px) {
-            .login-container {
-                padding: 2rem 1.5rem;
+            .login-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .login-body,
+            .login-footer {
+                padding: 1.5rem;
             }
 
-            .logo h1 {
-                font-size: 2rem;
+            .demo-box {
+                padding: 1rem;
             }
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="logo">
-            <h1>🧘‍♀️ PilatesFlow</h1>
-            <p>Yönetim Paneli</p>
-        </div>
-
-        <div id="alertBox" class="alert"></div>
-
-        <!-- Demo Credentials Info -->
-        <div class="demo-credentials">
-            <h4>📝 Demo Giriş Bilgileri</h4>
-            <p><strong>Email:</strong> admin@pilatesflow.com</p>
-            <p><strong>Şifre:</strong> demo123456</p>
-            <p style="margin-top: 0.5rem; font-size: 0.85rem; color: #999;">
-                (Supabase kurulumundan sonra kendi hesabınızı oluşturacaksınız)
-            </p>
-        </div>
-
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="email">E-posta</label>
-                <input 
-                    type="email" 
-                    id="email" 
-                    name="email" 
-                    placeholder="ornek@email.com"
-                    value="admin@pilatesflow.com"
-                    required
-                >
+    <div class="login-wrapper">
+        <div class="login-card">
+            <div class="login-header">
+                <h1>🧘‍♀️ PilatesFlow</h1>
+                <p>Yönetim Paneli Girişi</p>
             </div>
 
-            <div class="form-group">
-                <label for="password">Şifre</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    name="password" 
-                    placeholder="••••••••"
-                    value="demo123456"
-                    required
-                >
+            <div class="login-body">
+                <div id="alertBox" class="alert"></div>
+
+                <div class="demo-box">
+                    <h4>🎯 Demo Giriş Bilgileri</h4>
+                    <p style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">
+                        Sistemi denemek için aşağıdaki bilgileri kullanabilirsiniz:
+                    </p>
+                    <div class="demo-credentials">
+                        <div><strong>Email:</strong> admin@pilatesflow.com</div>
+                        <div><strong>Şifre:</strong> demo123456</div>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #999; margin-top: 0.75rem;">
+                        💡 Supabase kurulumu tamamlandıktan sonra kendi hesabınızı oluşturacaksınız.
+                    </p>
+                </div>
+
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="email">E-posta Adresi</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">📧</span>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                placeholder="ornek@email.com"
+                                value="admin@pilatesflow.com"
+                                required
+                                autocomplete="email"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Şifre</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🔒</span>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                placeholder="••••••••"
+                                value="demo123456"
+                                required
+                                autocomplete="current-password"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="forgot-password">
+                        <a href="#" onclick="alert('Şifre sıfırlama özelliği yakında eklenecek!'); return false;">
+                            Şifrenizi mi unuttunuz?
+                        </a>
+                    </div>
+
+                    <button type="submit" class="btn-login" id="loginBtn">
+                        Giriş Yap
+                    </button>
+                </form>
             </div>
 
-            <button type="submit" class="btn" id="loginBtn">
-                Giriş Yap
-            </button>
-        </form>
-
-        <div class="footer-links">
-            <a href="index.html">← Ana Sayfaya Dön</a>
-            <a href="#">Şifremi Unuttum</a>
+            <div class="login-footer">
+                <a href="index.html">
+                    <span>←</span>
+                    <span>Ana Sayfaya Dön</span>
+                </a>
+            </div>
         </div>
     </div>
 
     <script>
-        // ⚠️ ÖNEMLİ: Bu değerleri Supabase kurulumundan sonra değiştirin!
-        const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL';  // Örnek: https://xxxxx.supabase.co
-        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'; // Uzun bir key
+        // Supabase Configuration
+        const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
         
-        // Supabase client oluştur
         let supabase;
-        try {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        } catch (error) {
-            console.error('Supabase bağlantı hatası:', error);
+        const isDemoMode = SUPABASE_URL === 'YOUR_SUPABASE_PROJECT_URL';
+        
+        if (!isDemoMode) {
+            try {
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            } catch (error) {
+                console.error('Supabase bağlantı hatası:', error);
+            }
         }
 
         const loginForm = document.getElementById('loginForm');
         const loginBtn = document.getElementById('loginBtn');
         const alertBox = document.getElementById('alertBox');
 
-        // Sayfa yüklendiğinde oturum kontrolü
+        // Sayfa yüklendiğinde
         window.addEventListener('DOMContentLoaded', async () => {
-            // Supabase kurulmamışsa demo mode
-            if (!supabase || SUPABASE_URL === 'YOUR_SUPABASE_PROJECT_URL') {
-                showAlert('Demo modunda çalışıyorsunuz. Tam özellikler için SETUP-GUIDE.md dosyasını takip edin.', 'info');
+            if (isDemoMode) {
+                showAlert('🎭 Demo modunda çalışıyorsunuz. Yukarıdaki bilgilerle giriş yapabilirsiniz.', 'info');
                 return;
             }
 
-            // Aktif oturum var mı kontrol et
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                window.location.href = 'admin-dashboard.html';
+            // Aktif oturum kontrolü
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session) {
+                    window.location.href = 'admin-dashboard.html';
+                }
+            } catch (error) {
+                console.error('Oturum kontrolü hatası:', error);
             }
         });
 
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const email = document.getElementById('email').value;
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
 
-            // Demo mode check
-            if (!supabase || SUPABASE_URL === 'YOUR_SUPABASE_PROJECT_URL') {
-                // Demo credentials
+            if (!email || !password) {
+                showAlert('⚠️ Lütfen tüm alanları doldurun.', 'error');
+                return;
+            }
+
+            // Demo Mode
+            if (isDemoMode) {
                 if (email === 'admin@pilatesflow.com' && password === 'demo123456') {
-                    showAlert('Demo girişi başarılı! Dashboard\'a yönlendiriliyorsunuz...', 'success');
+                    setLoading(true);
+                    showAlert('✅ Demo girişi başarılı! Yönlendiriliyorsunuz...', 'success');
+                    
                     setTimeout(() => {
                         window.location.href = 'admin-dashboard.html';
                     }, 1500);
                 } else {
-                    showAlert('Demo için: admin@pilatesflow.com / demo123456 kullanın', 'error');
+                    showAlert('❌ Hatalı giriş! Demo için: admin@pilatesflow.com / demo123456', 'error');
                 }
                 return;
             }
 
-            // Gerçek Supabase auth
+            // Production Mode - Supabase Auth
             try {
-                loginBtn.disabled = true;
-                loginBtn.textContent = 'Giriş yapılıyor...';
+                setLoading(true);
 
                 const { data, error } = await supabase.auth.signInWithPassword({
                     email: email,
@@ -282,7 +462,7 @@
 
                 if (error) throw error;
 
-                showAlert('Giriş başarılı! Yönlendiriliyorsunuz...', 'success');
+                showAlert('✅ Giriş başarılı! Yönlendiriliyorsunuz...', 'success');
                 
                 setTimeout(() => {
                     window.location.href = 'admin-dashboard.html';
@@ -290,19 +470,43 @@
 
             } catch (error) {
                 console.error('Login error:', error);
-                showAlert('Giriş hatası: ' + error.message, 'error');
-                loginBtn.disabled = false;
-                loginBtn.textContent = 'Giriş Yap';
+                
+                let errorMessage = 'Giriş hatası: ';
+                if (error.message.includes('Invalid login credentials')) {
+                    errorMessage = '❌ E-posta veya şifre hatalı!';
+                } else if (error.message.includes('Email not confirmed')) {
+                    errorMessage = '📧 Lütfen e-posta adresinizi doğrulayın!';
+                } else {
+                    errorMessage += error.message;
+                }
+                
+                showAlert(errorMessage, 'error');
+                setLoading(false);
             }
         });
 
-        function showAlert(message, type) {
+        function showAlert(message, type = 'info') {
             alertBox.textContent = message;
-            alertBox.className = 'alert alert-' + type;
-            alertBox.style.display = 'block';
+            alertBox.className = `alert alert-${type} show`;
+            
+            if (type === 'success' || type === 'error') {
+                setTimeout(() => {
+                    alertBox.classList.remove('show');
+                }, 5000);
+            }
         }
 
-        // Password visibility toggle (gelişmiş özellik)
+        function setLoading(loading) {
+            if (loading) {
+                loginBtn.disabled = true;
+                loginBtn.innerHTML = '<span class="loading-spinner"></span>Giriş yapılıyor...';
+            } else {
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = 'Giriş Yap';
+            }
+        }
+
+        // Enter tuşu ile submit
         document.getElementById('password').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 loginForm.dispatchEvent(new Event('submit'));
